@@ -20,8 +20,8 @@ The cluster should have enough resources to meet computing, storage and GPU requ
      devFlags:
        manifests: 
        - uri: https://github.com/github/xieshenzh/nim-kserve-oci/refs/heads/main.tar.gz
-       - contextDir: modelcar
-       - sourcePath: model-files/rhoai
+         contextDir: modelcar
+         sourcePath: model-files/rhoai
    ```
    - Check `inferenceservice-config` ConfigMap in the `redhat-ods-applications` Project if `enableModelcar` is set to `true`.
    - Restart the `kserve-controller-manager` Pod in the `redhat-ods-applications` Project.
