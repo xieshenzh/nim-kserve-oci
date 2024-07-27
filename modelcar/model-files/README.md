@@ -58,10 +58,10 @@ The cluster should have enough resources to meet computing, storage and GPU requ
    curl --insecure ${URL}/v1/models
    ```
    ```shell
-   curl --insecure ${URL}/v1/chat/completions \                                                                 ─╯
+   curl --insecure ${URL}/v1/chat/completions \ 
      -H "Content-Type: application/json" \
      -d '{
-       "model": "/mnt/models/",
+       "model": "meta/llama3-8b-instruct",
        "messages": [{"role":"user","content":"What is KServe?"}],
        "temperature": 0.5,
        "top_p": 1,
