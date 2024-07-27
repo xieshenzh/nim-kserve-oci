@@ -47,8 +47,8 @@ The cluster should have enough resources to meet computing, storage and GPU requ
       --docker-password=${NGC_API_KEY}
    ```
 8. Create a Secret in the Project for accessing NIM in the Pods using the [manifest](./kserve/nvidia-nim-secrets.yaml). Make sure the `NGC_API_KEY` is properly set in the manifest.
-9. Create the ServingRuntime CR for NIM deployment with the [manifest](./kserve/1.0.0-llama3-8b-instruct.yml).
-10. Create the InferenceService CR to deployment NIM with the [manifest](./kserve/llama3-8b-instruct_1xgpu_1.0.0.yml). Adjust the `nodeSelector` and `tolerations` configurations based on the cluster resources and settings. Change the `storageUri` value to your NIM model OCI image name.
+9. Create the ServingRuntime CR for NIM deployment with the [manifest](./kserve/llama-3.1-8b-instruct-1.1.0.yaml).
+10. Create the InferenceService CR to deployment NIM with the [manifest](./kserve/llama-3.1-8b-instruct_1xgpu_1.1.0.yaml). Adjust the `nodeSelector` and `tolerations` configurations based on the cluster resources and settings. Change the `storageUri` value to your NIM model OCI image name.
 11. Check the status of the InferenceService CR, and get its endpoint URL when it is ready.
    ```shell
    oc get inferenceservice llama3-8b-instruct-1xgpu 
