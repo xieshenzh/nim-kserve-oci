@@ -4,7 +4,7 @@ kind: InferenceService
 metadata:
   annotations:
     autoscaling.knative.dev/target: "10"
-  name: llama-3-1-8b-instruct-1xgpu
+  name: llama3-8b-instruct-1xgpu
 spec:
   predictor:
     annotations:
@@ -16,14 +16,14 @@ spec:
     minReplicas: 1
     model:
       modelFormat:
-        name: nvidia-nim-llama-3.1-8b-instruct
+        name: nvidia-nim-llama3-8b-instruct
       resources:
         limits:
           nvidia.com/gpu: "1"
         requests:
           nvidia.com/gpu: "1"
-      runtime: nvidia-nim-llama-3.1-8b-instruct-1.1.0
-      storageUri: oci://quay.io/xiezhang7/nim-meta-llama-3.1-8b-instruct:v1.1.0
+      runtime: nvidia-nim-llama3-8b-instruct-1.0.0
+      storageUri: oci://quay.io/xiezhang7/nim-meta-llama3-8b-instruct:v1.0.0
     nodeSelector:
       node.kubernetes.io/instance-type: p4d.24xlarge
     tolerations:
