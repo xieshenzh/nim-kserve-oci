@@ -16,6 +16,7 @@ spec:
         requests:
           nvidia.com/gpu: "1"
       runtime: nvidia-nim-mistral-7b-instruct-v03-1.0.0
+      storageUri: oci://quay.io/xiezhang7/mistral-7b-instruct-v03:v1.0.0
     tolerations:
       - effect: NoSchedule
         key: nvidia.com/gpu
