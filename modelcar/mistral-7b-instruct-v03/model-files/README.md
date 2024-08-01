@@ -92,7 +92,7 @@ The cluster should have enough resources to meet computing, storage and GPU requ
    curl --insecure ${URL}/v1/chat/completions \                                                                 ─╯
      -H "Content-Type: application/json" \
      -d '{
-       "model": "mistralai/mistral-7b-instruct-v0.3",
+       "model": "/mnt/models/",
        "messages": [{"role":"user","content":"What is KServe?"}],
        "temperature": 0.5,
        "top_p": 1,
