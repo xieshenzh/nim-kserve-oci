@@ -11,11 +11,16 @@ spec:
     serving.kserve.io/enable-prometheus-scraping: "true"
   containers:
   - env:
-    - name: NIM_MODEL_NAME
+    - name: NIM_CACHE_PATH
       value: /mnt/models/
     - name: NIM_SERVED_MODEL_NAME
       value: mistralai/mistral-7b-instruct-v0.3
-    image: nvcr.io/nim/mistralai/mistral-7b-instruct-v03:1.0.0
+    - name: NGC_API_KEY
+      valueFrom:
+        secretKeyRef:
+          key: NGC_API_KEY
+          name: nvidia-nim-secrets
+    image: nvcr.io/nim/mistralai/mistral-7b-instruct-v03:1.0.0-cache
     name: kserve-container
     ports:
     - containerPort: 8000

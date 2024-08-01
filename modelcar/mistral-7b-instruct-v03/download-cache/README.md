@@ -36,7 +36,7 @@ The cluster should have enough resources to meet computing, storage and GPU requ
    ```
 5. Create a Secret in the Project for accessing NIM in the Pods using the [manifest](./kserve/nvidia-nim-secrets.yaml). Make sure the `NGC_API_KEY` is properly set in the manifest.
 6. Create a NIM Pod in Openshift with the [manifest](./kserve/mistral-7b-instruct-v03.yaml).
-7. Create a model repository in the Pod.
+7. Create a NIM cache in the Pod.
    1. Get a shell to the running container of NIM.
    ```shell
    oc exec --stdin --tty mistral-7b-instruct-v03 -c kserve-container -- /bin/bash
@@ -45,25 +45,25 @@ The cluster should have enough resources to meet computing, storage and GPU requ
    ```shell
    list-model-profiles
    ```
-   3. Select a compatible profile, use the `create-model-store` command to create a repository for the model.
+   3. Select a compatible profile, use the `download-to-cache` command to create a NIM cache for the profile. Or use flag `--all` download all the profiles.
    ```shell
-   create-model-store --profile <profile> --model-store /tmp/model
+   download-to-cache --profile <profile>
    ```
    4. Exit the shell.
-8. Change to this directory. Download the NIM model repository to local.
+8. Change to this directory. Download the NIM cache to local.
    ```shell
-   oc rsync mistral-7b-instruct-v03:/tmp/model ./download -c kserve-container
+   oc rsync mistral-7b-instruct-v03:/.cache ./download -c kserve-container
    ```
-9. Build an OCI image with the NIM model files with the Dockerfile, and push to registry. For example:
+9. Build an OCI image with the NIM cache with the Dockerfile, and push to registry. For example:
    ```shell
-   podman build . -f ./docker/Dockerfile -t quay.io/xiezhang7/mistral-7b-instruct-v03:v1.0.0
+   podman build . -f ./docker/Dockerfile -t quay.io/xiezhang7/mistral-7b-instruct-v03:v1.0.0-cache
    ```
 10. Delete the Pod from the Project.
    ```shell
    oc delete Pod mistral-7b-instruct-v03
    ```
 11. Create the ServingRuntime CR for NIM deployment with the [manifest](./kserve/mistral-7b-instruct-v03-1.0.0.yaml).
-12. Create the InferenceService CR to deployment NIM with the [manifest](./kserve/mistral-7b-instruct-v03_1xgpu_1.0.0.yaml). Adjust the `nodeSelector` and `tolerations` configurations based on the cluster resources and settings. Change the `storageUri` value to your NIM model repository OCI image name.
+12. Create the InferenceService CR to deployment NIM with the [manifest](./kserve/mistral-7b-instruct-v03_1xgpu_1.0.0.yaml). Adjust the `nodeSelector` and `tolerations` configurations based on the cluster resources and settings. Change the `storageUri` value to your NIM cache OCI image name.
 13. Check the status of the InferenceService CR, and get its endpoint URL when it is ready.
    ```shell
    oc get inferenceservice mistral-7b-instruct-v03-1xgpu

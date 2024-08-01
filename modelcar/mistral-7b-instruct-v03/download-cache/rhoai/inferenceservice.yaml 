@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: inferenceservice-config
+  namespace: kserve
+data:
+  agent: |-
+    {
+        "image" : "quay.io/modh/kserve-agent@sha256:ff852cd26fea0fd4daada72fb6fc7144f6af8f7ea3e4ba96e16a7b5c76421886",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1"
+    }
+  deploy: |-
+    {
+      "defaultDeploymentMode": "Serverless"
+    }
+  storageInitializer: |-
+    {
+        "image" : "quay.io/modh/kserve-storage-initializer@sha256:3c4e69f594748ff64c98420da9b1770d4633023f5687019b83991cdbb35222cf",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1",
+        "enableDirectPvcVolumeMount": true,
+        "enableModelcar": true,
+        "cpuModelcar": "10m",
+        "memoryModelcar": "15Mi"
+    }
+  batcher: |-
+    {
+        "image" : "quay.io/modh/kserve-agent@sha256:ff852cd26fea0fd4daada72fb6fc7144f6af8f7ea3e4ba96e16a7b5c76421886",
+        "memoryRequest": "1Gi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "1",
+        "cpuLimit": "1"
+    }
+  router: |-
+    {
+        "image" : "quay.io/modh/kserve-router@sha256:477048b97b89e1dae1a639b5a94f8ab60dfa101291ba7e4c48d857670238e549",
+        "memoryRequest": "100Mi",
+        "memoryLimit": "1Gi",
+        "cpuRequest": "100m",
+        "cpuLimit": "1"
+    }
