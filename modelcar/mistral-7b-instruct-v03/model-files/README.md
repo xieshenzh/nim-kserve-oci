@@ -67,7 +67,7 @@ The cluster should have enough resources to meet computing, storage and GPU requ
    ```
     2. Copy the download cache to local. For example:
    ```shell
-   oc rsync <pod name>:/tmp/model ./download/model -c kserve-container
+   oc rsync <pod name>:/tmp/model ./download -c kserve-container
    ```
 9. Build an OCI image with the NIM model files with the Dockerfile, and push to registry. For example:
    ```shell
