@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mistral-7b-instruct-v03
+spec:
+  containers:
+    - name: kserve-container
+      image: nvcr.io/nim/mistralai/mistral-7b-instruct-v03:1.0.0
+      env:
+        - name: NIM_CACHE_PATH
+          value: /tmp
+        - name: NGC_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: NGC_API_KEY
+              name: nvidia-nim-secrets
+      resources:
+        limits:
+          cpu: "12"
+          memory: 32Gi
+          nvidia.com/gpu: "1"
+        requests:
+          cpu: "12"
+          memory: 32Gi
+          nvidia.com/gpu: "1"
+      volumeMounts:
+        - mountPath: /dev/shm
+          name: dshm
+        - mountPath: /.cache
+          name: cache
+  imagePullSecrets:
+    - name: ngc-secret
+  volumes:
+    - emptyDir:
+        medium: Memory
+        sizeLimit: 16Gi
+      name: dshm
+    - emptyDir: { }
+      name: cache
+  tolerations:
+    - effect: NoSchedule
+      key: nvidia.com/gpu
+      operator: Exists
+    - effect: NoSchedule
+      key: odh-notebook
+      operator: Exists
+  nodeSelector:
+    node.kubernetes.io/instance-type: p4d.24xlarge

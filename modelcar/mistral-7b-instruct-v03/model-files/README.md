@@ -34,49 +34,33 @@ The cluster should have enough resources to meet computing, storage and GPU requ
       --docker-username='$oauthtoken'\
       --docker-password=${NGC_API_KEY}
    ```
-5. Create a Secret in the Project for accessing NIM in the Pods using the [manifest](./download/kserve/nvidia-nim-secrets.yaml). Make sure the `NGC_API_KEY` is properly set in the manifest.
-6. Create NIM download cache by deploying NIM in Openshift.
-    1. Create the ServingRuntime CR for NIM deployment with the [manifest](./download/kserve/mistral-7b-instruct-v03-1.0.0.yaml).
-    2. Create the InferenceService CR to deployment NIM with the [manifest](./download/kserve/mistral-7b-instruct-v03_1xgpu_1.0.0.yaml). Adjust the `nodeSelector` and `tolerations` configurations based on the cluster resources and settings.
-    3. Check the status of the InferenceService CR, wait until it is ready to serve.
-   ```shell
-   oc get inferenceservice mistral-7b-instruct-v03-1xgpu 
-   ```
+5. Create a Secret in the Project for accessing NIM in the Pods using the [manifest](./kserve/nvidia-nim-secrets.yaml). Make sure the `NGC_API_KEY` is properly set in the manifest.
+6. Create a NIM Pod in Openshift with the [manifest](./kserve/mistral-7b-instruct-v03.yaml).
 7. Create a model repository in the Pod.
-   1. Find the name of the pod for NIM.
+   1. Get a shell to the running container of NIM.
    ```shell
-   oc get pods
+   oc exec --stdin --tty mistral-7b-instruct-v03 -c kserve-container -- /bin/bash
    ```
-   2. Get a shell to the running container of NIM.
-   ```shell
-   oc exec --stdin --tty <pod name> -c kserve-container -- /bin/bash
-   ```
-   3. In the shell, use the [list-model-profiles](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html#serving-models-from-local-assets) command to list the available profiles.
+   2. In the shell, use the [list-model-profiles](https://docs.nvidia.com/nim/large-language-models/latest/getting-started.html#serving-models-from-local-assets) command to list the available profiles.
    ```shell
    list-model-profiles
    ```
-   4. Select a compatible profile, use the `create-model-store` command to create a repository for the model.
+   3. Select a compatible profile, use the `create-model-store` command to create a repository for the model.
    ```shell
    create-model-store --profile <profile> --model-store /tmp/model
    ```
-   5. Close the shell.
+   4. Exit the shell.
 8. Change to this directory. Download the NIM model repository to local.
-    1. Find the name of the pod for NIM.
    ```shell
-   oc get pods
-   ```
-    2. Copy the download cache to local. For example:
-   ```shell
-   oc rsync <pod name>:/tmp/model ./download -c kserve-container
+   oc rsync mistral-7b-instruct-v03:/tmp/model ./download -c kserve-container
    ```
 9. Build an OCI image with the NIM model files with the Dockerfile, and push to registry. For example:
    ```shell
    podman build . -f ./docker/Dockerfile -t quay.io/xiezhang7/mistral-7b-instruct-v03:v1.0.0
    ```
-10. Delete the InferenceService and ServingRuntime CRs for generating the NIM download cache from the Project.
+10. Delete the Pod from the Project.
    ```shell
-   oc delete InferenceService mistral-7b-instruct-v03-1xgpu
-   oc delete ServingRuntime nvidia-nim-mistral-7b-instruct-v03-1.0.0
+   oc delete Pod mistral-7b-instruct-v03
    ```
 11. Create the ServingRuntime CR for NIM deployment with the [manifest](./kserve/mistral-7b-instruct-v03-1.0.0.yaml).
 12. Create the InferenceService CR to deployment NIM with the [manifest](./kserve/mistral-7b-instruct-v03_1xgpu_1.0.0.yaml). Adjust the `nodeSelector` and `tolerations` configurations based on the cluster resources and settings. Change the `storageUri` value to your NIM model cache OCI image name.
