@@ -49,7 +49,7 @@ The cluster should have enough resources to meet computing, storage and GPU requ
    ```
    2. Copy the download cache to local. For example: 
    ```shell
-   oc rsync llama3-8b-instruct-1xgpu-cache-predictor-00001-deployment-w6qq8:/mnt/models ./download
+   oc rsync llama3-8b-instruct-1xgpu-cache-predictor-00001-deployment-w6qq8:/mnt/models ./download -c kserve-container
    ```
 8. Build an OCI image with the NIM model files with the Dockerfile, and push to registry. For example:
    ```shell
